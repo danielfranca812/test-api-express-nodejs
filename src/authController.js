@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UsersRepository = require("./usersRepository");
+require("dotenv").config();
 
 const SECRET = process.env.SECRET;
 
@@ -12,11 +13,11 @@ const AuthController = {
     if (!user || user.password !== password) {
       return res.status(401).json({ error: "Credenciais invalidas" });
     }
-
+    console.log(user);
     const token = jwt.sign(
       { id: user.id, email: user.email, type: user.type },
       SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "1h" }
     );
 
     res.json({ token });

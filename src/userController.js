@@ -28,12 +28,23 @@ const UserController = {
     res.json(users);
   },
 
+  findById: (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    const user = UsersRepository.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "Usuario nao encontrado" });
+    }
+    res.json(user);
+  },
+
   update: (req, res) => {
     const { id } = req.params;
-    const { name, email, type, password } = req.body;
+    const { name } = req.body;
 
-    const user = UsersRepository.update(id, { name, email, type, password });
+    const user = UsersRepository.update(id, { name });
     if (!user) {
+      ss;
       return res.status(404).json({ error: "Usuario nao encontrado" });
     }
 

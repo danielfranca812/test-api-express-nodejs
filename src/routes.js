@@ -10,8 +10,10 @@ routes.get("/", (req, res) => {
 
 routes.post("/auth/login", AuthController.login);
 
+routes.use("/users", AuthController.authenticate);
 routes.post("/users", UserController.create);
 routes.get("/users", UserController.list);
+routes.get("/users/:id", UserController.findById);
 routes.put("/users/:id", UserController.update);
 routes.delete("/users/:id", UserController.delete);
 
