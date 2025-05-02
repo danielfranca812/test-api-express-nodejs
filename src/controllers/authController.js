@@ -5,15 +5,13 @@ require("dotenv").config();
 const SECRET = process.env.SECRET;
 
 const AuthController = {
-  login: (req, res) => {
+  login: async (req, res) => {
     const { email, password } = req.body;
 
-    const user = UsersRepository.findByEmail(email);
-
+    const user = await UsersRepository.findByEmail(email);
     if (!user || user.password !== password) {
       return res.status(401).json({ error: "Credenciais invalidas" });
     }
-    console.log(user);
     const token = jwt.sign(
       { id: user.id, email: user.email, type: user.type },
       SECRET,
