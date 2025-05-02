@@ -34,13 +34,15 @@ const UsersRepository = {
     return users.find((user) => user.id === id);
   },
 
-  update: (id, name) => {
+  update: (id, name, email, password) => {
     const users = readUsersFromFileJson();
     const index = users.findIndex((user) => user.id === id);
     if (index === -1) return null;
     users[index] = {
       ...users[index],
       ...name,
+      ...password,
+      ...email,
     };
     saveUsersToFileJson(users);
     return users[index];

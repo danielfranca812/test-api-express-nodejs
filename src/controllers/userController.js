@@ -1,4 +1,4 @@
-const UsersRepository = require("./usersRepository");
+const UsersRepository = require("../repositories/usersRepository");
 
 const UserController = {
   create: (req, res) => {
@@ -40,9 +40,9 @@ const UserController = {
 
   update: (req, res) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, email, password } = req.body;
 
-    const user = UsersRepository.update(id, { name });
+    const user = UsersRepository.update(id, { name, password, email });
     if (!user) {
       ss;
       return res.status(404).json({ error: "Usuario nao encontrado" });

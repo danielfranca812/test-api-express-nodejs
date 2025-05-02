@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const UsersRepository = require("./usersRepository");
+const UsersRepository = require("../repositories/usersRepository");
 require("dotenv").config();
 
 const SECRET = process.env.SECRET;
