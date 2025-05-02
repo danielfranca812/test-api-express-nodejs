@@ -1,59 +1,45 @@
 const { v4: uuidv4 } = require("uuid");
-const fs = require("fs");
-const path = require("path");
+const db = require(".db");
 
-const filePath = path.join(__dirname, "users.json");
-function readUsersFromFileJson() {
-  const data = fs.readFileSync(filePath, "utf-8");
-  return JSON.parse(data);
-}
-
-function saveUsersToFileJson(users) {
-  fs.writeFileSync(filePath, JSON.stringify(users, null, 3));
-}
 const UsersRepository = {
-  create: (userData) => {
-    const users = readUsersFromFileJson();
-    const user = { id: uuidv4(), ...userData };
-    users.push(user);
-    saveUsersToFileJson(users);
-    return user;
+  create: async (userData) => {
+    const { name, email, password, type } = userData;
+    await db.query(
+      "INSERT INTO users (id, name, email, type, password) VALUES (?, ?, ?, ?, ?)",
+      [uuidv4(), name, email, type, password]
+    );
+    return userData;
   },
 
-  findAll: () => {
-    return readUsersFromFileJson();
+  findAll: async () => {
+    const [rows] = await db.query("SELECT * FROM users");
+    return rows();
   },
 
-  findByEmail: (email) => {
-    const users = readUsersFromFileJson();
-    return users.find((user) => user.email === email);
+  findByEmail: async (email) => {
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [
+      email,
+    ]);
+
+    return rows[0];
   },
 
-  findById: () => {
-    const users = readUsersFromFileJson();
-    return users.find((user) => user.id === id);
+  findById: async (id) => {
+    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [email]);
+
+    return rows[0];
   },
 
-  update: (id, name, email, password) => {
-    const users = readUsersFromFileJson();
-    const index = users.findIndex((user) => user.id === id);
-    if (index === -1) return null;
-    users[index] = {
-      ...users[index],
-      ...name,
-      ...password,
-      ...email,
-    };
-    saveUsersToFileJson(users);
-    return users[index];
+  update: async (id, name, email, password) => {
+    await db.query(
+      "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?",
+      [name, email, password, id]
+    );
+    return true;
   },
 
-  delete: (id) => {
-    const users = readUsersFromFileJson();
-    const index = users.findIndex((user) => user.id === id);
-    if (index === -1) return false;
-    users.splice(index, 1);
-    saveUsersToFileJson(users);
+  delete: async (id) => {
+    await db.query("DELETE FROM users WHERE id = ?", [id]);
     return true;
   },
 };
