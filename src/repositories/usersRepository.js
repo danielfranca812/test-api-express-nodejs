@@ -24,12 +24,13 @@ const UsersRepository = {
   },
 
   findById: async (id) => {
-    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [email]);
+    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [id]);
 
     return rows[0];
   },
 
-  update: async (id, name, email, password) => {
+  update: async (id, { name, email, password }) => {
+    console.log(email, password, name, id);
     await db.query(
       "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?",
       [name, email, password, id]

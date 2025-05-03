@@ -1,10 +1,10 @@
 const UsersRepository = require("../repositories/usersRepository");
 
 const UserController = {
-  create: async (req, res) => {
-    const { name, email, type, password } = req.body;
+  createUser: async (req, res) => {
+    const { name, email, password } = req.body;
 
-    if (!name || !email || !type || !password) {
+    if (!name || !email || !password) {
       return res.status(400).json({ error: "Campos obrigatorios faltando" });
     }
 
@@ -16,7 +16,28 @@ const UserController = {
     const user = UsersRepository.create({
       name,
       email,
-      type,
+      type: "user",
+      password,
+    });
+    res.status(201).json(user);
+  },
+
+  createAdmin: async (req, res) => {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "Campos obrigatorios faltando" });
+    }
+
+    const existingUser = await UsersRepository.findByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ error: "Email ja cadastrado" });
+    }
+
+    const user = UsersRepository.create({
+      name,
+      email,
+      type: "admin",
       password,
     });
     res.status(201).json(user);
@@ -41,9 +62,15 @@ const UserController = {
     const { id } = req.params;
     const { name, email, password } = req.body;
 
-    const user = await UsersRepository.update(id, { name, password, email });
+    const selectUser = await UsersRepository.findById(id);
+    const updateUser = {
+      name: name?.trim() || selectUser.name,
+      email: email?.trim() || selectUser.email,
+      password: password?.trim() || selectUser.password,
+    };
+
+    const user = await UsersRepository.update(id, updateUser);
     if (!user) {
-      ss;
       return res.status(404).json({ error: "Usuario nao encontrado" });
     }
 
