@@ -3,7 +3,7 @@ const db = require("../data/db");
 
 const UsersRepository = {
   create: async (userData) => {
-    const { name, email, password, type } = userData;
+    const { name, email, type, password } = userData;
     await db.query(
       "INSERT INTO users (id, name, email, type, password) VALUES (?, ?, ?, ?, ?)",
       [uuidv4(), name, email, type, password]
@@ -30,7 +30,6 @@ const UsersRepository = {
   },
 
   update: async (id, { name, email, password }) => {
-    console.log(email, password, name, id);
     await db.query(
       "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?",
       [name, email, password, id]

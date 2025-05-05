@@ -37,15 +37,14 @@ const UserController = {
     const user = UsersRepository.create({
       name,
       email,
-      type: "admin",
       password,
+      type: "admin",
     });
     res.status(201).json(user);
   },
 
   list: async (req, res) => {
     const users = await UsersRepository.findAll();
-    console.log(users);
     res.json(users);
   },
 
